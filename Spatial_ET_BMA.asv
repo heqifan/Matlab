@@ -97,7 +97,7 @@ for yr = yr1 : yr2   %年份循环
     file_png = [wks, '\BMA\BMA_ET_',  num2str(yr), '.png'];
     print(file_png, '-r600', '-dpng');
     file_out = [wks, '\BMA\BMA_ET_',  num2str(yr), '.tif'];
-    geotiffwrite2(file_out,et_bma, R, 'GeoKeyDirectoryTag', info.GeoTIFFTags.GeoKeyDirectoryTag);  %写出数据
+    geotiffwrite2(file_out,et_bma, R, 'GeoKeyDirectoryTag', info.GeoTIFFTags.GeoKeyDirectoryTag);
     
     
     disp(wk')

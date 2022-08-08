@@ -3,15 +3,15 @@ close all; clear all; clc;
 %% Read models
 % ET observations on EC tower, mm/m2/8day --> mm/m2/day
 fxls = 'D:\Sanjy250m\ET_BMA\dat\hgc_site_8days_20190606.xls';
-[dat, txt, raw] = xlsread(fxls, 'ET');
-dt_obs = datenum(dat(:,1), 1, 1) + dat(:,2);
-yr1_obs = min(year(dt_obs));yr2_obs = max(year(dt_obs));
-et_obs = dat(:,3)/8;
+[dat, txt, raw] = xlsread(fxls, 'ET');       %读取xls数据，dat为所有数值，txt为列名
+dt_obs = datenum(dat(:,1), 1, 1) + dat(:,2);   
+yr1_obs = min(year(dt_obs));yr2_obs = max(year(dt_obs));   %获取最大年份和最小年份
+et_obs = dat(:,3)/8;   %将每8天的数据变成每天的数据
 
 % PT-JPL模拟的海北灌丛站蒸散，单位mm/m2/day,时间分辨率8d
 fxls = 'D:\Sanjy250m\ET_BMA\dat\站点提取HBGC_ET.xlsx';
 [dat, txt, raw] = xlsread(fxls);
-dt_jpl = datenum(txt(2:1611));
+dt_jpl = datenum(txt(2:1611));   
 et_jpl = dat;
 % plot(dt_jpl, et_jpl); datetick('x'); title('PT-JPL');
 
@@ -140,7 +140,7 @@ dat = [et1_obs, et1_jpl, et1_artis, et1_mod16, et1_sse,  et1_glcv];
 yo = dat(:,1);
 rr = corr(dat);
 n = 368; m = 5;
-%% Performance of each model
+%% Performance of each model   每个模型的性能
 B = [];
 for i = 1 : m
     yp = dat(:,i + 1);
@@ -223,10 +223,10 @@ chinflux_et = dat(:,1);
 BMA_et      = et_bma;
 all_model_et = (dat(:, 2:end))';
 %--------------------------------------------------------------------------
-% To combine all kinds of ET in one array:
-%  et(1,:) the ET from flux obeservation.
-%  et(2,:) the ET from BMA method.
-%  et(3:num_models,:) the ET from different models.
+% To combine all kinds of ET in one array:   将所有种类的ET组合在一个阵列中。
+%  et(1,:) the ET from flux obeservation.   从通量观测的ET。
+%  et(2,:) the ET from BMA method.   BMA方法的ET。
+%  et(3:num_models,:) the ET from different models.  不同模型的ET。
 %--------------------------------------------------------------------------
 all_et = zeros(num_models+2,num_times) ;
 
@@ -240,7 +240,7 @@ et = all_et ;
 
 %%
 %--------------------------------------------------------------------------
-% To calculate statistics for Taylor diagram
+% To calculate statistics for Taylor diagram  要计算泰勒图的统计数据
 % https://github.com/PeterRochford/SkillMetricsToolbox/wiki
 %--------------------------------------------------------------------------
 struct_et(1).name = station_name ;
@@ -353,7 +353,7 @@ outputfile = ['..\Figures\', station_name,'_TaylorDiagram'] ;
 print(outputfile,'-djpeg') ;
 
 
-%% Performance of each model
+%% Performance of each model   每个模型的性能
 BS = [];
 dat = all_et';
 [~,m] = size(dat);

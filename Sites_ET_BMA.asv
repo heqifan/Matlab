@@ -1,35 +1,34 @@
 close all; clear all; clc;
 
 %% Read models
-ET observations on EC tower, mm/m2/8day --> mm/m2/day
-% fxls = 'D:\Sanjy250m\ET_BMA\dat\hgc_site_8days_20190606.xls';
-% [dat, txt, raw] = xlsread(fxls, 'ET');
-% dt_obs = datenum(dat(:,1), 1, 1) + dat(:,2);
-% yr1_obs = min(year(dt_obs));yr2_obs = max(year(dt_obs));
-% et_obs = dat(:,3)/8;
-                                                                                                                         
-PT-JPL模拟的海北灌丛站蒸散，单位mm/m2/day,时间分辨率8d
+% ET observations on EC tower, mm/m2/8day --> mm/m2/day
+fxls = 'D:\Sanjy250m\ET_BMA\dat\hgc_site_8days_20190606.xls';
+[dat, txt, raw] = xlsread(fxls, 'ET');       %读取xls数据，dat为所有数值，txt为列名
+dt_obs = datenum(dat(:,1), 1, 1) + dat(:,2);   
+yr1_obs = min(year(dt_obs));yr2_obs = max(year(dt_obs));   %获取最大年份和最小年份
+et_obs = dat(:,3)/8;   %将每8天的数据变成每天的数据
 
-% fxls = 'D:\Sanjy250m\ET_BMA\dat\站点提取HBGC_ET.xlsx';
-% [dat, txt, raw] = xlsread(fxls);
-% dt_jpl = datenum(txt(2:1611));
-% et_jpl = dat;
+% PT-JPL模拟的海北灌丛站蒸散，单位mm/m2/day,时间分辨率8d
+fxls = 'D:\Sanjy250m\ET_BMA\dat\站点提取HBGC_ET.xlsx';
+[dat, txt, raw] = xlsread(fxls);
+dt_jpl = datenum(txt(2:1611));   
+et_jpl = dat;
 % plot(dt_jpl, et_jpl); datetick('x'); title('PT-JPL');
 
-ARTIS: bi-weekly ET, mm/m2/day,
-% fxls = 'D:\Sanjy250m\ET_BMA\dat\ET_HB_ARTIS.xls';
-% [dat, txt, raw] = xlsread(fxls, 'ARTIS2');
-% jd = dat(:,1) - dat(:,2) * 1000;
-% dt_artis = datenum(dat(:,2), 1, 1) + jd;
-% et_artis = dat(:, 3);
-% yr = year(dt_artis);
-% yr1 = min(yr); yr2 = max(yr); xt = [];i = 1;
-% for yt = yr1: yr2, for d = 1 : 8 : 361,xt(i,1) = datenum(yt,1,1)+d-1;i = i + 1;end;end
-% et = spline(dt_artis, et_artis, xt);
-% dt_artis = xt;
-% et_artis = et;
+% ARTIS: bi-weekly ET, mm/m2/day,
+fxls = 'D:\Sanjy250m\ET_BMA\dat\ET_HB_ARTIS.xls';
+[dat, txt, raw] = xlsread(fxls, 'ARTIS2');
+jd = dat(:,1) - dat(:,2) * 1000;
+dt_artis = datenum(dat(:,2), 1, 1) + jd;
+et_artis = dat(:, 3);
+yr = year(dt_artis);
+yr1 = min(yr); yr2 = max(yr); xt = [];i = 1;
+for yt = yr1: yr2, for d = 1 : 8 : 361,xt(i,1) = datenum(yt,1,1)+d-1;i = i + 1;end;end
+et = spline(dt_artis, et_artis, xt);
+dt_artis = xt;
+et_artis = et;
 
-MOD16: mm/m2/8dayS
+% MOD16: mm/m2/8dayS
 fxls = 'D:\Sanjy250m\ET_BMA\dat\ET_HB-month.xls';
 [dat, txt, raw] = xlsread(fxls, 'Sheet1', '$b1:$c706');
 yr = fix(dat(:,1)/1000);
