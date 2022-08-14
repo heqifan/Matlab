@@ -2,21 +2,21 @@ close all; clear all; clc;
 
 %% Read models
 % ET observations on EC tower, mm/m2/8day --> mm/m2/day
-fxls = 'D:\Sanjy250m\ET_BMA\dat\hgc_site_8days_20190606.xls';
-[dat, txt, raw] = xlsread(fxls, 'ET');       %读取xls数据，dat为所有数值，txt为列名
-dt_obs = datenum(dat(:,1), 1, 1) + dat(:,2);   
+fxls = 'D:\WareHouse\Matlab\Matlab\hgc_site_8days_20190606.xls';
+[dat, txt, raw] = xlsread(fxls, 'ET');       %读取xls数据，dat为所有数值，txt为列名,raw为包括列名在内的所有数据
+dt_obs = datenum(dat(:,1), 1, 1) + dat(:,2);   %转换时间再相加
 yr1_obs = min(year(dt_obs));yr2_obs = max(year(dt_obs));   %获取最大年份和最小年份
 et_obs = dat(:,3)/8;   %将每8天的数据变成每天的数据
 
 % PT-JPL模拟的海北灌丛站蒸散，单位mm/m2/day,时间分辨率8d
-fxls = 'D:\Sanjy250m\ET_BMA\dat\站点提取HBGC_ET.xlsx';
+fxls = 'D:\WareHouse\Matlab\Matlab\站点提取HBGC_ET.xlsx';
 [dat, txt, raw] = xlsread(fxls);
 dt_jpl = datenum(txt(2:1611));   
 et_jpl = dat;
 % plot(dt_jpl, et_jpl); datetick('x'); title('PT-JPL');
 
 % ARTIS: bi-weekly ET, mm/m2/day,
-fxls = 'D:\Sanjy250m\ET_BMA\dat\ET_HB_ARTIS.xls';
+fxls = 'D:\WareHouse\Matlab\Matlab\ET_HB_ARTIS.xls';
 [dat, txt, raw] = xlsread(fxls, 'ARTIS2');
 jd = dat(:,1) - dat(:,2) * 1000;
 dt_artis = datenum(dat(:,2), 1, 1) + jd;
@@ -29,7 +29,7 @@ dt_artis = xt;
 et_artis = et;
 
 % MOD16: mm/m2/8dayS
-fxls = 'D:\Sanjy250m\ET_BMA\dat\ET_HB-month.xls';
+fxls = 'D:\WareHouse\Matlab\Matlab\ET_HB-month.xls';
 [dat, txt, raw] = xlsread(fxls, 'Sheet1', '$b1:$c706');
 yr = fix(dat(:,1)/1000);
 jd = dat(:,1) - yr * 1000;
@@ -77,7 +77,7 @@ et_mod16 = yp;
 % SSEBop: The operational simplified Surface Energy Balance (SSEBop)
 % Senay et al. 2012
 % monthly ET
-fxls = 'D:\Sanjy250m\ET_BMA\dat\ET_HB-month.xls';
+fxls = 'D:\WareHouse\Matlab\Matlab\ET_HB-month.xls';
 [dat, ~, raw] = xlsread(fxls, 'SSE');  %, '$A1:$B191'
 yr = fix(dat(:,1)/1000);
 jd = dat(:,1) - yr * 1000;
@@ -91,7 +91,7 @@ dt_sse = xt;
 et_sse = et;
 
 % GLCV: Bi-weekly ET in 8km of resolution
-fxls = 'D:\Sanjy250m\ET_BMA\dat\ET_HB_GC_8km.xls';
+fxls = 'D:\WareHouse\Matlab\Matlab\ET_HB_GC_8km.xls';
 [dat, txt, raw] = xlsread(fxls, 'GC_8km');
 yr = fix(dat(:,1)/1000);
 jd = dat(:,1) - yr * 1000;
@@ -105,7 +105,7 @@ dt_glcv8km = xt;
 et_glcv8km = et;
 
 % GLCV: Bi-weekly ET in 250m of resolution, 8days
-fxls = 'D:\Sanjy250m\ET_BMA\dat\ET_HB_GC_250m.xls';
+fxls = 'D:\WareHouse\Matlab\Matlab\ET_HB_GC_250m.xls';
 [dat, txt, raw] = xlsread(fxls, 'GC250');
 yr = fix(dat(:,1)/1000);
 jd = dat(:,1) - yr * 1000;
@@ -137,17 +137,17 @@ hold off;
 
 % dat = [et1_obs, et1_jpl, et1_artis, et1_mod16, et1_sse, et1_glcv8km, et1_glcv];
 dat = [et1_obs, et1_jpl, et1_artis, et1_mod16, et1_sse,  et1_glcv];
-yo = dat(:,1);
-rr = corr(dat);
-n = 368; m = 5;
+yo = dat(:,1);    %获取第一列数据  是啥？
+rr = corr(dat);   %corr(X) 返回输入矩阵 X 中各列之间的两两线性相关系数矩阵。是啥？
+n = 368; m = 5;  
 %% Performance of each model   每个模型的性能
 B = [];
 for i = 1 : m
-    yp = dat(:,i + 1);
-    [b, bs, r, rs, p] = regress(yo, [ones([n,1]), yp]);
-    bias = sum((yo - yp))/n;
-    rmse = (sum((yo - yp).^2)/n)^0.5;
-    re = rmse / mean(yo);
+    yp = dat(:,i + 1);   %从第二列开始获取每列
+    [b, bs, r, rs, p] = regress(yo, [ones([n,1]), yp]);   %线性回归
+    bias = sum((yo - yp))/n;   %计算偏差
+    rmse = (sum((yo - yp).^2)/n)^0.5;  %计算均方根误差
+    re = rmse / mean(yo);   %
     nse = 1 - sum((yo - yp).^2)/sum((yo - mean(yo)).^2);
     B(i,:) = [b(1), b(2), p(1), p(3), bias, rmse, re, nse, mean(yp), std(yp),mean(yo), std(yo)];
 end
