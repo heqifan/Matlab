@@ -166,21 +166,6 @@ disp(wk_model);
 % mean, std, median, x_0.95, x_0.99
 csvwrite('..\Tables\wk_model.csv', wk_model);
 
-loc = [1 50 100];
-for j = 1 : 100
-    wk = wk0(j,:);
-    sigmak = sigmak0(j,:);
-    
-    n=size(Tainingdata,1);
-    
-    for i=1:n
-        BMAV(i,j)=sum(wk.*Tainingdata(i,2:end));
-        temp1=sum(wk.*(Tainingdata(i,2:end)-sum(wk.*Tainingdata(i,2:end))).^2);
-        temp2=sum(wk.*sigmak.^2);
-        VarV(i,1)=sqrt(temp1+temp2);
-    end
-    
-end
 
 for i = 1 : n
     et_bma(i,1) = sum(wk1 .* Tainingdata(i,2:end));
