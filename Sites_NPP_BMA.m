@@ -27,11 +27,11 @@ close all; clear all; clc;
 % ftif = [wks, '\Normal_W\','Normal_W_', num2str(year), '.tif'];    
 % [npp_w, R, cc] = geotiffread(ftif);  
 % npp_w = npp_modis(:);
-fxls = 'K:\HeQiFan\BMA\bma.xlsx';
+fxls = 'E:\Integrated_analysis_data\Data\Out\BMA\bma_npp.xlsx';
 [dat, txt, raw] = xlsread(fxls);       %读取xls数据，dat为所有数值，txt为列名,raw为包括列名在内的所有数据
 
 % dat = [npp_lai,npp_geo, npp_glass, npp_modis, npp_tpdc, npp_w];
-m = 5;  
+m = 4;  
 b = dat(all(~isnan(dat),2),:); %删除含有NAN的行
 
 %% BMA
@@ -57,7 +57,7 @@ for i = 1 : m
 end
 disp(wk_model);
 % mean, std, median, x_0.95, x_0.99
-csvpath = 'K:\HeQiFan\BMA\wk_model_.csv';  
+csvpath = 'E:\Integrated_analysis_data\Data\Out\BMA\wk_model_npp.csv';  
 csvwrite(csvpath, wk_model);
 % writematrix(wk_model,csvpath);     % 写入csv
 disp('program is over') ;
